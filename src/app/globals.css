@@ -19,3 +19,10 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer components {
+  .container-middle {
+    @apply flex items-center justify-center w-full flex-col h-dvh;
+  }
+
+}
