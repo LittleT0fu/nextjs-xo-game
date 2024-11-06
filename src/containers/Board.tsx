@@ -15,7 +15,7 @@ export default function Board() {
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(
     Math.round(Math.random() * 1) === 1 ? "X" : "O"
   );
-  const [winner, setWinner] = useState<Player>(null);
+  const [winnerLine, setWinnerLine] = useState<Action[]>([]);
   const [action, setAction] = useState<Action[]>([]);
 
   function setSqureValue(index: number) {
@@ -34,8 +34,9 @@ export default function Board() {
 
   function reset() {
     setBoard(Array(boardSize * boardSize).fill(null));
-    setWinner(null);
+    setWinnerLine([]);
     setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O");
+    setAction([]);
   }
 
   function checkWinner() {
@@ -44,12 +45,26 @@ export default function Board() {
 
     // Rows
     for (let i = 0; i < size; i++) {
-      lines.push(board.slice(i * size, i * size + size));
+      let value = board.slice(i * size, i * size + size);
+      let indexLine = [];
+      for (let j = i * size; j < size * (i + 1); j++) {
+        indexLine.push({
+          index: j,
+          value: value[j],
+        });
+      }
+      lines.push(indexLine);
+      // lines.push(board.slice(i * size, i * size + size));
     }
+
+    // Cols
     for (let i = 0; i < size; i++) {
       const col = [];
       for (let j = 0; j < size; j++) {
-        col.push(board[i + j * size]);
+        col.push({
+          index: i + j * size,
+          value: board[i + j * size],
+        });
       }
       lines.push(col);
     }
@@ -57,24 +72,31 @@ export default function Board() {
     const diag1 = [];
     const diag2 = [];
     for (let i = 0; i < size; i++) {
-      diag1.push(board[i * (size + 1)]);
-      diag2.push(board[(i + 1) * (size - 1)]);
+      diag1.push({
+        index: i * (size + 1),
+        value: board[i * (size + 1)],
+      });
+      diag2.push({
+        index: (i + 1) * (size - 1),
+        value: board[(i + 1) * (size - 1)],
+      });
     }
     lines.push(diag1, diag2);
     // Check for winner
     for (let line of lines) {
-      if (line.every((cell) => cell === "X")) {
+      if (line.every((cell) => cell.value === "X")) {
+        setWinnerLine([...winnerLine, ...line]);
         return "X";
-      } else if (line.every((cell) => cell === "O")) {
+      } else if (line.every((cell) => cell.value === "O")) {
+        setWinnerLine([...winnerLine, ...line]);
         return "O";
       }
     }
     return null;
   }
-
+  //active everytime board has action
   useEffect(() => {
-    setWinner(checkWinner());
-    console.log(action);
+    console.log(checkWinner());
   }, [board]);
 
   return (
@@ -83,14 +105,17 @@ export default function Board() {
       <div
         className={`relative grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden bg-gray-800 gap-2`}
       >
-        {board.map((_, i) => {
+        {board.map((_, index) => {
           return (
             <Square
-              key={i}
-              value={board[i]}
-              setValue={() => setSqureValue(i)}
-              winner={winner}
+              key={index}
+              value={board[index]}
+              setValue={() => setSqureValue(index)}
               currentPlayer={currentPlayer}
+              index={index}
+              winning={winnerLine.some((line) =>
+                line.index === index ? true : false
+              )}
             />
           );
         })}
