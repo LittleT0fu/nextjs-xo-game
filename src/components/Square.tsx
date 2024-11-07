@@ -16,12 +16,12 @@ export default function Square({
   currentPlayer,
   winning,
 }: SquareProps) {
-  const classname = "group w-[10rem] h-[10rem] text-[5rem]";
+  const classname = "group w-[7rem] h-[7rem] text-[5rem] text-chalk";
   const pClassname =
     "w-full w-full opacity-0 group-hover:opacity-100 duration-150 text-gray-400";
   if (!value) {
     return (
-      <button className={`${classname} bg-white`} onClick={setValue}>
+      <button className={`${classname} bg-gray-800`} onClick={setValue}>
         <p className={`${pClassname}`}>{currentPlayer}</p>
       </button>
     );
@@ -31,11 +31,11 @@ export default function Square({
       className={`${classname} ${
         value === "X"
           ? winning
-            ? "text-red-600 bg-red-200"
-            : "text-red-600 bg-white"
+            ? "bg-red-400"
+            : "bg-gray-800"
           : winning
-          ? "text-green-600 bg-green-200"
-          : "text-green-600 bg-white"
+          ? "bg-green-400"
+          : "bg-gray-800"
       } `}
       disabled
     >

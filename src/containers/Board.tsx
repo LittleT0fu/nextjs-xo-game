@@ -37,28 +37,27 @@ export default function Board() {
   }
 
   function reset() {
-    setBoard(Array(boardSize * boardSize).fill(null));
+    setBoard(board.map(() => null));
     setWinnerLine([]);
     setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O");
     setAction([]);
   }
 
   function checkWinner() {
+    console.log(board);
     const size = Math.sqrt(board.length);
     const lines = [];
 
     // Rows
     for (let i = 0; i < size; i++) {
-      let value = board.slice(i * size, i * size + size);
       let indexLine = [];
       for (let j = i * size; j < size * (i + 1); j++) {
         indexLine.push({
           index: j,
-          value: value[j],
+          value: board[j],
         });
       }
       lines.push(indexLine);
-      // lines.push(board.slice(i * size, i * size + size));
     }
 
     // Cols
@@ -86,6 +85,8 @@ export default function Board() {
       });
     }
     lines.push(diag1, diag2);
+
+    console.log(lines);
     // Check for winner
     for (let line of lines) {
       if (line.every((cell) => cell.value === "X")) {
@@ -99,6 +100,7 @@ export default function Board() {
     if (action.length >= 9) {
       return "Tile";
     }
+
     return null;
   }
 
@@ -125,7 +127,7 @@ export default function Board() {
             {" "}
             <p className="text-blue-500">
               It's{" "}
-              <span className="px-3 py-1.5 bg-white rounded-md text-lg font-bold ">
+              <span className="px-3 py-1.5 bg-chalk rounded-md text-lg font-bold ">
                 {currentPlayer}
               </span>{" "}
               turn
@@ -134,14 +136,14 @@ export default function Board() {
           <div className="right flex ">
             <button
               onClick={reset}
-              className="bg-red-600 rounded-md px-3 py-1.5 text-white hover:bg-red-700 active:bg-red-800"
+              className="bg-red-600 rounded-md px-3 py-1.5 text-chalk hover:bg-red-700 active:bg-red-800"
             >
               Reset
             </button>
           </div>
         </div>
         <div
-          className={`relative grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden bg-gray-800 gap-2 w-[496px] w-[496px]`}
+          className={`relative rounded-2xl grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden gap-2`}
         >
           {board.map((_, index) => {
             return (
@@ -160,7 +162,9 @@ export default function Board() {
         </div>
       </div>
       <Modal isOpen={isModalOPen} onClose={winHandler}>
-        Hello
+        <div className="p-4 text-[28px]">
+          {winner !== "Tile" ? "winner is " + winner : "Tile !"}
+        </div>
       </Modal>
     </>
   );
