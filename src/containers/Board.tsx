@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Square from "@/components/Square";
+import Modal from "@/components/modal/Modal";
 
 interface Action {
   index: number;
   value: "X" | "O";
 }
 
-type Player = "X" | "O" | null;
+type Player = "X" | "O" | null | "Tile";
 
 export default function Board() {
   let boardSize = 3;
@@ -16,7 +17,10 @@ export default function Board() {
     Math.round(Math.random() * 1) === 1 ? "X" : "O"
   );
   const [winnerLine, setWinnerLine] = useState<Action[]>([]);
+  const [winner, setWinner] = useState<Player>();
   const [action, setAction] = useState<Action[]>([]);
+
+  const [isModalOPen, setIsModalOpen] = useState<boolean>(false);
 
   function setSqureValue(index: number) {
     setBoard(
@@ -92,35 +96,72 @@ export default function Board() {
         return "O";
       }
     }
+    if (action.length >= 9) {
+      return "Tile";
+    }
     return null;
   }
+
+  const winHandler = () => {
+    reset();
+    setIsModalOpen(false);
+  };
+
   //active everytime board has action
   useEffect(() => {
-    console.log(checkWinner());
+    setWinner(checkWinner());
   }, [board]);
 
+  useEffect(() => {
+    if (winner) setIsModalOpen(true);
+    return () => setIsModalOpen(false);
+  });
+
   return (
-    <div className="">
-      <p className="text-blue-500">turn {currentPlayer}</p>
-      <div
-        className={`relative grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden bg-gray-800 gap-2`}
-      >
-        {board.map((_, index) => {
-          return (
-            <Square
-              key={index}
-              value={board[index]}
-              setValue={() => setSqureValue(index)}
-              currentPlayer={currentPlayer}
-              index={index}
-              winning={winnerLine.some((line) =>
-                line.index === index ? true : false
-              )}
-            />
-          );
-        })}
+    <>
+      <div>
+        <div className="header flex justify-between bg-slate-200 p-3 mb-4 rounded-lg shadow-frame">
+          <div className="left flex items-center">
+            {" "}
+            <p className="text-blue-500">
+              It's{" "}
+              <span className="px-3 py-1.5 bg-white rounded-md text-lg font-bold ">
+                {currentPlayer}
+              </span>{" "}
+              turn
+            </p>
+          </div>
+          <div className="right flex ">
+            <button
+              onClick={reset}
+              className="bg-red-600 rounded-md px-3 py-1.5 text-white hover:bg-red-700 active:bg-red-800"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+        <div
+          className={`relative grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden bg-gray-800 gap-2 w-[496px] w-[496px]`}
+        >
+          {board.map((_, index) => {
+            return (
+              <Square
+                key={index}
+                value={board[index]}
+                setValue={() => setSqureValue(index)}
+                currentPlayer={currentPlayer}
+                index={index}
+                winning={winnerLine.some((line) =>
+                  line.index === index ? true : false
+                )}
+              />
+            );
+          })}
+        </div>
       </div>
-      <button onClick={reset}>Reset</button>
-    </div>
+      <Modal isOpen={isModalOPen} onClose={winHandler}>
+        Hello
+      </Modal>
+    </>
   );
 }
