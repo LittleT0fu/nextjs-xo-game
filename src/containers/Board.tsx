@@ -1,17 +1,27 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
+import { useSearchParams } from "next/navigation";
 
+type Player = "X" | "O" | null | "Tile";
 interface Action {
   index: number;
   value: "X" | "O";
 }
 
-type Player = "X" | "O" | null | "Tile";
+interface Match {
+  winner?: Player;
+  action: {};
+  gameStart: Date;
+}
 
 export default function Board() {
-  let boardSize = 3;
+  const searchParams = useSearchParams();
+
+  const [boardSize, setBoardSize] = useState<number>(
+    Number(searchParams.get("boardSize"))
+  );
   const [board, setBoard] = useState(Array(boardSize * boardSize).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(
     Math.round(Math.random() * 1) === 1 ? "X" : "O"
@@ -22,6 +32,8 @@ export default function Board() {
 
   const [isModalOPen, setIsModalOpen] = useState<boolean>(false);
   const [gameStartTime, setGameStartTime] = useState<Date>(new Date());
+
+  const [gameMode, setGameMode] = useState(searchParams.get("gameMode"));
 
   function setSqureValue(index: number) {
     setBoard(
@@ -115,16 +127,39 @@ export default function Board() {
   }, [board]);
 
   useEffect(() => {
-    if (winner) setIsModalOpen(true);
+    if (winner) {
+      setIsModalOpen(true);
+      saveHistory();
+    }
+
     return () => setIsModalOpen(false);
-  });
+  }, [winner]);
 
   function saveHistory() {
     const newHistory = {
       winner: winner,
       action: action,
       gameStart: gameStartTime,
+      gameMode: gameMode,
+      boardSize: boardSize,
     };
+    let history: Match[] = [];
+    if (localStorage.getItem("matchHistory") !== null) {
+      console.log("history exist");
+      const matchHistory: string | null = localStorage.getItem("matchHistory");
+
+      try {
+        history = matchHistory ? JSON.parse(matchHistory) : null;
+      } catch (error) {
+        console.error("Error parsing JSON from localStorage:", error);
+        history = [];
+      }
+      history.push(newHistory);
+      localStorage.setItem("matchHistory", JSON.stringify(history));
+    } else {
+      history.push(newHistory);
+      localStorage.setItem("matchHistory", JSON.stringify(history));
+    }
   }
 
   return (
@@ -151,7 +186,11 @@ export default function Board() {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl grid grid-cols-[repeat(3,minmax(0,1fr))] overflow-hidden gap-2`}
+          className={`relative rounded-2xl grid ${
+            boardSize === 3
+              ? "grid-cols-[repeat(3,minmax(0,1fr))]"
+              : "grid-cols-[repeat(4,minmax(0,1fr))]"
+          } overflow-hidden gap-2`}
         >
           {board.map((_, index) => {
             return (
