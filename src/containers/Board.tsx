@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
 
@@ -21,6 +21,7 @@ export default function Board() {
   const [action, setAction] = useState<Action[]>([]);
 
   const [isModalOPen, setIsModalOpen] = useState<boolean>(false);
+  const [gameStartTime, setGameStartTime] = useState<Date>(new Date());
 
   function setSqureValue(index: number) {
     setBoard(
@@ -41,10 +42,10 @@ export default function Board() {
     setWinnerLine([]);
     setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O");
     setAction([]);
+    setGameStartTime(new Date());
   }
 
   function checkWinner() {
-    console.log(board);
     const size = Math.sqrt(board.length);
     const lines = [];
 
@@ -86,7 +87,6 @@ export default function Board() {
     }
     lines.push(diag1, diag2);
 
-    console.log(lines);
     // Check for winner
     for (let line of lines) {
       if (line.every((cell) => cell.value === "X")) {
@@ -118,6 +118,14 @@ export default function Board() {
     if (winner) setIsModalOpen(true);
     return () => setIsModalOpen(false);
   });
+
+  function saveHistory() {
+    const newHistory = {
+      winner: winner,
+      action: action,
+      gameStart: gameStartTime,
+    };
+  }
 
   return (
     <>

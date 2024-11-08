@@ -24,4 +24,8 @@ body {
   .container-middle {
     @apply flex flex-col items-center justify-center w-full grow;
   }
+
+  .btn1 {
+    @apply border-gray-800 border-2 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-chalk transition ease-linear duration-150;
+  }
 }
