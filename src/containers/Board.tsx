@@ -3,18 +3,7 @@ import React, { useEffect, useState } from "react";
 import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
 import { useSearchParams } from "next/navigation";
-
-type Player = "X" | "O" | null | "Tile";
-interface Action {
-  index: number;
-  value: "X" | "O";
-}
-
-interface Match {
-  winner?: Player;
-  action: {};
-  gameStart: Date;
-}
+import { Player, Action, Match } from "@/interfaces/interface";
 
 export default function Board() {
   const searchParams = useSearchParams();
