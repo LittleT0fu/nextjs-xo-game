@@ -20,27 +20,25 @@ export default function Modal({
       }
     };
     window.addEventListener("keydown", handleKeyDown);
+    const handleOutsideClick = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).id === "modal") {
+        onClose();
+      }
+    };
+    window.addEventListener("click", handleOutsideClick);
     return () => {
       window.removeEventListener("keydown", handleKeyDown, false);
+      window.removeEventListener("click", handleOutsideClick);
     };
   }, [onClose]);
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300">
-        <div className="bg-white p-5 rounded-md shadow-lg max-w-sm md:ax-w-md mx-auto transition-transform duration-300 transform-gpu">
-          <div className="flex flex-col">
-            {children}
-            <div className="flex justify-center">
-              <button onClick={onClose} className="" title="Restart?">
-                <img
-                  width={40}
-                  height={40}
-                  src="https://static.thenounproject.com/png/904768-200.png"
-                  alt=""
-                />
-              </button>
-            </div>
-          </div>
+      <div
+        id="modal"
+        className="z-40 fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center transition-opacity duration-300"
+      >
+        <div className="z-50 bg-white p-5 rounded-md shadow-lg max-w-sm md:ax-w-md mx-auto transition-transform duration-300 transform-gpu">
+          <div className="flex flex-col">{children}</div>
         </div>
       </div>
     </>

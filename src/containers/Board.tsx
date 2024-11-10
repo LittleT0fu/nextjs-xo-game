@@ -127,6 +127,7 @@ export default function Board() {
   function saveHistory() {
     const newHistory = {
       winner: winner,
+      winnerLine: winnerLine,
       action: action,
       gameStart: gameStartTime,
       gameMode: gameMode,
@@ -192,6 +193,7 @@ export default function Board() {
                 winning={winnerLine.some((line) =>
                   line.index === index ? true : false
                 )}
+                type={"play"}
               />
             );
           })}
@@ -200,6 +202,16 @@ export default function Board() {
       <Modal isOpen={isModalOPen} onClose={winHandler}>
         <div className="p-4 text-[28px]">
           {winner !== "Tile" ? "winner is " + winner : "Tile !"}
+          <div className="flex justify-center">
+            <button onClick={winHandler} className="" title="Restart?">
+              <img
+                width={40}
+                height={40}
+                src="https://static.thenounproject.com/png/904768-200.png"
+                alt=""
+              />
+            </button>
+          </div>
         </div>
       </Modal>
     </>

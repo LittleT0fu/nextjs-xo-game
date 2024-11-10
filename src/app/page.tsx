@@ -40,7 +40,7 @@ export default function Home() {
           <p className="border-b-2">History board</p>
           <HistoryBoard />
         </div>
-        <div className=" md:absolute top-0 right-full border p-4 rounded-lg shadow-frame w-[240px] h-[320px] md:mr-4 md:mt-0 mt-4 bg-white">
+        <div className="md:absolute top-0 right-full border p-4 rounded-lg shadow-frame w-[240px] h-[320px] md:mr-4 md:mt-0 mt-4 bg-white">
           <p className="border-b-2">About</p>
           <p>{about}</p>
         </div>

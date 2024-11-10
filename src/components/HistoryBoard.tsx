@@ -1,9 +1,17 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Match } from "@/interfaces/interface";
+import Modal from "./modal/Modal";
+import ReplayBoard from "@/containers/ReplayBoard";
 
 export function HistoryCard({ history }: any) {
-  const { winner, gameMode, boardSize, gameStart } = history;
+  const { winner, gameMode, boardSize, gameStart, action, winnerLine } =
+    history;
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  function ModalHandler() {
+    setIsModalOpen(!isModalOpen);
+  }
 
   const resultContent =
     winner === "Tile" ? (
@@ -35,18 +43,41 @@ export function HistoryCard({ history }: any) {
     );
 
   return (
-    <div className="flex flex-col border-b-2 gap-1 pr-2">
-      <div className="flex text-xs justify-between">
-        <div className="flex gap-2">
-          <span>{gameMode}</span>
-          <span>
-            {boardSize}x{boardSize}
-          </span>
+    <>
+      <button className="w-full" onClick={ModalHandler}>
+        <div className="flex flex-col border-b-2 gap-1 pr-2">
+          <div className="flex text-xs justify-between">
+            <div className="flex gap-2">
+              <span>{gameMode}</span>
+              <span>
+                {boardSize}x{boardSize}
+              </span>
+            </div>
+            <div>{formatDate(gameStart)}</div>
+          </div>
+          <div className="flex justify-between">{resultContent}</div>
         </div>
-        <div>{formatDate(gameStart)}</div>
-      </div>
-      <div className="flex justify-between">{resultContent}</div>
-    </div>
+      </button>
+      <Modal onClose={ModalHandler} isOpen={isModalOpen}>
+        <div className="flex flex-col border-b-2 gap-1 pr-2 w-[240px]">
+          <div className="flex text-xs justify-between">
+            <div className="flex gap-2">
+              <span>{gameMode}</span>
+              <span>
+                {boardSize}x{boardSize}
+              </span>
+            </div>
+            <div>{formatDate(gameStart)}</div>
+          </div>
+          <div className="flex justify-between">{resultContent}</div>
+        </div>
+        <ReplayBoard
+          action={action}
+          boardSize={boardSize}
+          winnerLine={winnerLine}
+        />
+      </Modal>
+    </>
   );
 }
 
@@ -63,6 +94,7 @@ function formatDate(targetTime: Date) {
 }
 
 export default function HistoryBoard() {
+  //get data from local storage
   if (localStorage.getItem("matchHistory") === null) {
     return <div>No history</div>;
   }
@@ -74,8 +106,6 @@ export default function HistoryBoard() {
     console.error("Error parsing JSON from localStorage:", error);
     history = [];
   }
-
-  console.log(history);
 
   return (
     <div
