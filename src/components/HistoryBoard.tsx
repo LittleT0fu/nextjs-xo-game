@@ -59,23 +59,31 @@ export function HistoryCard({ history }: any) {
         </div>
       </button>
       <Modal onClose={ModalHandler} isOpen={isModalOpen}>
-        <div className="flex flex-col border-b-2 gap-1 pr-2 w-[240px]">
-          <div className="flex text-xs justify-between">
-            <div className="flex gap-2">
-              <span>{gameMode}</span>
-              <span>
-                {boardSize}x{boardSize}
-              </span>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col border-b-2 gap-1 pr-2 w-[240px]">
+            <div className="flex text-xs justify-between">
+              <div className="flex gap-2">
+                <span>{gameMode}</span>
+                <span>
+                  {boardSize}x{boardSize}
+                </span>
+              </div>
+              <div>{formatDate(gameStart)}</div>
             </div>
-            <div>{formatDate(gameStart)}</div>
+            <div className="flex justify-between">{resultContent}</div>
           </div>
-          <div className="flex justify-between">{resultContent}</div>
+          <ReplayBoard
+            action={action}
+            boardSize={boardSize}
+            winnerLine={winnerLine}
+          />
+          <button
+            className="btn1 border-red-600 hover:bg-red-600"
+            onClick={ModalHandler}
+          >
+            close
+          </button>
         </div>
-        <ReplayBoard
-          action={action}
-          boardSize={boardSize}
-          winnerLine={winnerLine}
-        />
       </Modal>
     </>
   );

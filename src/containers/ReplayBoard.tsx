@@ -16,7 +16,7 @@ export default function ReplayBoard({ action, boardSize, winnerLine }: any) {
     );
   }, []);
   return (
-    <div className="flex justify-center pt-4">
+    <div className="flex justify-center">
       <div
         className={`relative rounded-2xl grid ${
           boardSize === 3
