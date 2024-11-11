@@ -4,7 +4,7 @@ import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
 import { useSearchParams } from "next/navigation";
 import { Player, Action, Match, Result } from "@/interfaces/interface";
-import { bestMove, randomMove } from "@/utils/Bot";
+import { bestMove, getAIMove, randomMove } from "@/utils/Bot";
 
 export default function Board() {
   const searchParams = useSearchParams();
@@ -117,6 +117,9 @@ export default function Board() {
   //active everytime board has action
   useEffect(() => {
     setWinner(checkWinner());
+    if (gameMode === "ai" && currentPlayer !== humanPlayer && !isBoardFull()) {
+      setSqureValue(getAIMove(board, humanPlayer));
+    }
   }, [board]);
 
   useEffect(() => {
@@ -135,10 +138,10 @@ export default function Board() {
       gameStart: gameStartTime,
       gameMode: gameMode,
       boardSize: boardSize,
+      humanPlayer: humanPlayer,
     };
     let history: Match[] = [];
     if (localStorage.getItem("matchHistory") !== null) {
-      console.log("history exist");
       const matchHistory: string | null = localStorage.getItem("matchHistory");
 
       try {
@@ -185,9 +188,11 @@ export default function Board() {
               : "grid-cols-[repeat(4,minmax(0,1fr))]"
           } overflow-hidden gap-2`}
         >
-          {gameMode === "ai" && currentPlayer !== humanPlayer && (
-            <div className="absolute z-50 inset-0 border-1"></div>
-          )}
+          {gameMode === "ai" &&
+            currentPlayer !== humanPlayer &&
+            !isModalOPen && (
+              <div className="absolute z-50 inset-0 border-1"></div>
+            )}
           {board.map((_, index) => {
             return (
               <Square

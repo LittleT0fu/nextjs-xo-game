@@ -7,6 +7,7 @@ import { title } from "process";
 const gameModeBTN = [
   { patchname: "/tictactoe", gameMode: "pvp", boardSize: 3, title: "3x3" },
   { patchname: "/tictactoe", gameMode: "pvp", boardSize: 4, title: "4x4" },
+  { patchname: "/tictactoe", gameMode: "ai", boardSize: 3, title: "3x3 AI" },
 ];
 const about = "this project use nextJS tailwindcss typescript to create";
 
@@ -36,7 +37,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="md:absolute top-0 left-full border p-4 rounded-lg shadow-frame w-[240px] h-[320px] md:ml-4 md:mt-0 mt-4 bg-white">
+        <div className="md:absolute top-0 left-full border p-4 rounded-lg shadow-frame w-[280px] h-[320px] md:ml-4 md:mt-0 mt-4 bg-white">
           <p className="border-b-2">History board</p>
           <HistoryBoard />
         </div>

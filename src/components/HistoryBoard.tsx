@@ -5,8 +5,15 @@ import Modal from "./modal/Modal";
 import ReplayBoard from "@/containers/ReplayBoard";
 
 export function HistoryCard({ history }: any) {
-  const { winner, gameMode, boardSize, gameStart, action, winnerLine } =
-    history;
+  const {
+    winner,
+    gameMode,
+    boardSize,
+    gameStart,
+    action,
+    winnerLine,
+    humanPlayer,
+  } = history;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   function ModalHandler() {
@@ -14,16 +21,20 @@ export function HistoryCard({ history }: any) {
   }
 
   const resultContent =
-    winner === "Tile" ? (
+    winner === "Tie" ? (
       <>
-        <span className="w-2/5 text-start">O</span>
+        <span className="w-2/5 text-start">
+          O {!(humanPlayer === "O") && "(AI) "}
+        </span>
         <span className="font-bold">Tile</span>
-        <span className="w-2/5 text-end">X</span>
+        <span className="w-2/5 text-end">
+          X {!(humanPlayer === "X") && "(AI) "}
+        </span>
       </>
     ) : (
       <>
         <span className="w-2/5 text-start">
-          O{" "}
+          <span>O {!(humanPlayer === "O") && "(AI) "}</span>
           <span
             className={` ${winner === "O" ? "text-green-700" : "text-red-700"}`}
           >
@@ -36,8 +47,8 @@ export function HistoryCard({ history }: any) {
             className={` ${winner === "X" ? "text-green-700" : "text-red-700"}`}
           >
             {winner === "X" ? "Winner" : "Lost"}
-          </span>{" "}
-          X
+          </span>
+          <span> X {!(humanPlayer === "X") && "(AI) "}</span>
         </span>
       </>
     );

@@ -4,36 +4,31 @@ export function aiTurn(board: any[], dept: number, humanPlayer: Player) {
   let aiPlayer = humanPlayer === "O" ? "X" : "O";
 }
 
+export function getAIMove(board: any[], humanPlayer: Player) {
+  const random = Math.floor(Math.random() * 100);
+
+  if (random > 35) {
+    return randomMove(board);
+  } else {
+    return bestMove(board, humanPlayer);
+  }
+}
+
 export function bestMove(board: any[], humanPlayer: Player) {
-  console.log("best move");
   let aiPlayer: Player = humanPlayer === "O" ? "X" : "O";
   let bestScore = -Infinity;
-  let move;
-  // for (let i = 0; i < boardSize; i++) {
-  //   for (let j = i * boardSize; j < boardSize; i++) {
-  //     if (board[j] === null) {
-  //       return j;
-  //       // board[j] = aiPlayer;
-  //       // let score = miniMax(board, 0, humanPlayer, aiPlayer, false);
-  //       // board[j] = null;
-  //       // if (score > bestScore) {
-  //       //   move = j;
-  //       // }
-  //     }
-  //   }
-  // }
+  let move = 0;
   board.forEach((b, i) => {
-    console.log(b);
     if (b === null) {
       board[i] = aiPlayer;
       let score = miniMax(board, 0, humanPlayer, aiPlayer, false);
       board[i] = null;
       if (score > bestScore) {
+        bestScore = score;
         move = i;
       }
     }
   });
-  console.log("return move :" + move);
   return move;
 }
 
@@ -45,40 +40,31 @@ function miniMax(
   isMaximizing: boolean
 ) {
   let result: Result = checkWinner(board);
-  console.log("miniMax");
   if (result !== null) {
     if (result === humanPlayer) return -1;
     if (result === aiPlayer) return 1;
     return 0;
   }
 
-  console.log("check Maximizing");
   if (isMaximizing) {
-    const boardSize = Math.sqrt(board.length);
     let bestScore = -Infinity;
     board.forEach((b, i) => {
       if (board[i] == null) {
         board[i] = aiPlayer;
         let score = miniMax(board, dept + 1, humanPlayer, aiPlayer, false);
         board[i] = null;
-        if (score > bestScore) {
-          bestScore = score;
-        }
+        bestScore = Math.max(score, bestScore);
       }
     });
     return bestScore;
   } else {
-    const boardSize = Math.sqrt(board.length);
     let bestScore = Infinity;
-    console.log("check Infinity");
     board.forEach((b, i) => {
-      if (board[i] == null) {
+      if (board[i] === null) {
         board[i] = humanPlayer;
         let score = miniMax(board, dept + 1, humanPlayer, aiPlayer, true);
         board[i] = null;
-        if (score < bestScore) {
-          bestScore = score;
-        }
+        bestScore = Math.min(score, bestScore);
       }
     });
     return bestScore;
