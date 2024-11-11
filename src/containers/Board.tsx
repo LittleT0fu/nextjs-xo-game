@@ -4,6 +4,7 @@ import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
 import { useSearchParams } from "next/navigation";
 import { Player, Action, Match } from "@/interfaces/interface";
+import { randomMove } from "@/utils/Bot";
 
 export default function Board() {
   const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ export default function Board() {
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(
     Math.round(Math.random() * 1) === 1 ? "X" : "O"
   );
+  const [firstPlayer, setFirstPlayer] = useState(currentPlayer);
   const [winnerLine, setWinnerLine] = useState<Action[]>([]);
   const [winner, setWinner] = useState<Player>();
   const [action, setAction] = useState<Action[]>([]);
@@ -98,11 +100,13 @@ export default function Board() {
         return "O";
       }
     }
-    if (action.length >= 9) {
-      return "Tile";
-    }
+    if (isBoardFull()) return "Tile";
 
     return null;
+  }
+
+  function isBoardFull() {
+    return board.every((cell) => cell !== null);
   }
 
   const winHandler = () => {
@@ -113,6 +117,11 @@ export default function Board() {
   //active everytime board has action
   useEffect(() => {
     setWinner(checkWinner());
+    //ai move
+    if (gameMode === "ai" && currentPlayer !== firstPlayer) {
+      //ai move
+      setSqureValue(randomMove(board));
+    }
   }, [board]);
 
   useEffect(() => {

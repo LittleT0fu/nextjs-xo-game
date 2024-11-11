@@ -7,6 +7,7 @@ import { title } from "process";
 const gameModeBTN = [
   { patchname: "/tictactoe", gameMode: "pvp", boardSize: 3, title: "3x3" },
   { patchname: "/tictactoe", gameMode: "pvp", boardSize: 4, title: "4x4" },
+  { patchname: "/tictactoe", gameMode: "ai", boardSize: 3, title: "3x3 AI" },
 ];
 const about = "this project use nextJS tailwindcss typescript to create";
 
