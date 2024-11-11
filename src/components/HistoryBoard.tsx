@@ -126,8 +126,8 @@ export default function HistoryBoard() {
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
     >
-      {history.toReversed().map((his) => (
-        <HistoryCard history={his} />
+      {history.toReversed().map((his, i) => (
+        <HistoryCard key={i} history={his} />
       ))}
     </div>
   );

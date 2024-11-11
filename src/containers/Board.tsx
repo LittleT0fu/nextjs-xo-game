@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import Square from "@/components/Square";
 import Modal from "@/components/modal/Modal";
 import { useSearchParams } from "next/navigation";
-import { Player, Action, Match } from "@/interfaces/interface";
-import { randomMove } from "@/utils/Bot";
+import { Player, Action, Match, Result } from "@/interfaces/interface";
+import { bestMove, randomMove } from "@/utils/Bot";
 
 export default function Board() {
   const searchParams = useSearchParams();
@@ -13,12 +13,12 @@ export default function Board() {
     Number(searchParams.get("boardSize"))
   );
   const [board, setBoard] = useState(Array(boardSize * boardSize).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(
     Math.round(Math.random() * 1) === 1 ? "X" : "O"
   );
-  const [firstPlayer, setFirstPlayer] = useState(currentPlayer);
+  const [humanPlayer, setHumanPlayer] = useState<Player>(currentPlayer);
   const [winnerLine, setWinnerLine] = useState<Action[]>([]);
-  const [winner, setWinner] = useState<Player>();
+  const [winner, setWinner] = useState<Result>();
   const [action, setAction] = useState<Action[]>([]);
 
   const [isModalOPen, setIsModalOpen] = useState<boolean>(false);
@@ -100,7 +100,7 @@ export default function Board() {
         return "O";
       }
     }
-    if (isBoardFull()) return "Tile";
+    if (isBoardFull()) return "Tie";
 
     return null;
   }
@@ -117,11 +117,6 @@ export default function Board() {
   //active everytime board has action
   useEffect(() => {
     setWinner(checkWinner());
-    //ai move
-    if (gameMode === "ai" && currentPlayer !== firstPlayer) {
-      //ai move
-      setSqureValue(randomMove(board));
-    }
   }, [board]);
 
   useEffect(() => {
@@ -129,7 +124,6 @@ export default function Board() {
       setIsModalOpen(true);
       saveHistory();
     }
-
     return () => setIsModalOpen(false);
   }, [winner]);
 
@@ -191,6 +185,9 @@ export default function Board() {
               : "grid-cols-[repeat(4,minmax(0,1fr))]"
           } overflow-hidden gap-2`}
         >
+          {gameMode === "ai" && currentPlayer !== humanPlayer && (
+            <div className="absolute z-50 inset-0 border-1"></div>
+          )}
           {board.map((_, index) => {
             return (
               <Square
@@ -210,7 +207,7 @@ export default function Board() {
       </div>
       <Modal isOpen={isModalOPen} onClose={winHandler}>
         <div className="p-4 text-[28px]">
-          {winner !== "Tile" ? "winner is " + winner : "Tile !"}
+          {winner !== "Tie" ? "winner is " + winner : "Tie !"}
           <div className="flex justify-center">
             <button onClick={winHandler} className="" title="Restart?">
               <img
