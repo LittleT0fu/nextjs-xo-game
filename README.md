@@ -31,3 +31,14 @@ Run Project
 ```bash
   npm run dev
 ```
+### Page Routing Flow
+![page-diagram](https://github.com/LittleT0fu/nextjs-xo-game/blob/master/diagram/page-diagram.png)
+
+### Board Action Diagram
+![board-action](https://github.com/LittleT0fu/nextjs-xo-game/blob/master/diagram/board-action-diagram.png)
+
+### Check Winner Algorithm
+![check winner](https://github.com/LittleT0fu/nextjs-xo-game/blob/master/diagram/checkWinner-diagram.png)
+
+### Best Move AI Algorithm
+![best move](https://github.com/LittleT0fu/nextjs-xo-game/blob/master/diagram/bestmove-diagram.png)
